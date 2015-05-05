@@ -12,8 +12,8 @@ init x y = {topCounter = x, bottomCounter = y}
 
 view : Ref Model -> Html
 view model = div [] [
-        Counter.view (Ref.field model "topCounter"),
-        Counter.view (Ref.field model "bottomCounter")
+        Counter.view (Ref.field "topCounter" model),
+        Counter.view (Ref.field "bottomCounter" model)
     ]
 
 

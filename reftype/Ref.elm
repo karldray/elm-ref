@@ -23,8 +23,8 @@ type alias FieldSpec t u = {get: t -> u, set: u -> t -> t}
 fieldSpec : String -> FieldSpec t u
 fieldSpec = Native.Ref.fieldSpec
 
-field : Ref t -> String -> Ref u
-field r name =
+field : String -> Ref t -> Ref u
+field name r =
     let f = fieldSpec name
     in {
         value = f.get r.value,
