@@ -1,4 +1,4 @@
-module ArrayRef where
+module Array.Ref (get, indexedMap, map) where
 
 import Array exposing (Array)
 import Maybe
