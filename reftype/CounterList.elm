@@ -1,38 +1,37 @@
 module CounterList where
 
+import Array exposing (Array)
+import Array.Extra
 import Counter
 import Html exposing (Html, div, button, text)
 import Html.Events exposing (onClick)
-import IdList exposing (IdList)
-import IdListRef
+import ArrayRef
 import Ref exposing (Ref, transform)
 
 
-type alias Model = IdList Counter.Model
+type alias Model = Array Counter.Model
 
 init : List Counter.Model -> Model
-init = IdList.fromList
+init = Array.fromList
 
 addBtn : Ref Model -> Html
-addBtn model = button [onClick (transform model) (IdList.prepend 0)] [text "+"]
+addBtn model = button [onClick (transform model) (Array.push (Counter.init 0))] [text "+"]
 
 view1 : Ref Model -> Html
 view1 model = div [] (
         [addBtn model]
         ++
-        IdListRef.map Counter.view model
+        Array.toList (ArrayRef.map Counter.view model)
     )
 
 view2 : Ref Model -> Html
 view2 model = div [] (
         [addBtn model]
         ++
-        List.map (\item ->
-            let id = fst item
-                counter = IdListRef.item model item
-                remove = Signal.forwardTo (transform model) (always (IdList.remove id))
+        Array.toList (ArrayRef.indexedMap (\i counter ->
+            let remove = Signal.forwardTo (transform model) (always (Array.Extra.removeAt i))
             in  Counter.viewWithRemove counter remove
-        ) model.value
+        ) model)
     )
 
 
