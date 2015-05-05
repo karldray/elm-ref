@@ -16,20 +16,27 @@ transform : Ref t -> Address (t -> t)
 transform r = Signal.forwardTo r.address (\f -> f r.value)
 
 
--- create a ref to a member of a ref'd object
+-- apply a "focus" to a ref
 
 type alias FieldSpec t u = {get: t -> u, set: u -> t -> t}
+
+map : FieldSpec t u -> Ref t -> Ref u
+map f r = {
+    value = f.get r.value,
+    address = Signal.forwardTo (transform r) (f.set)
+    }
+
+
+-- create a focus from a named field
 
 fieldSpec : String -> FieldSpec t u
 fieldSpec = Native.Ref.fieldSpec
 
+
+-- create a ref to a member of a ref'd record
+
 field : String -> Ref t -> Ref u
-field name r =
-    let f = fieldSpec name
-    in {
-        value = f.get r.value,
-        address = Signal.forwardTo (transform r) f.set
-    }
+field = fieldSpec >> map
 
 
 -- helpers for defining the top-level main signal
