@@ -27,19 +27,36 @@ main : Signal Html
 main = Signal.map view (Ref.signal initialModel)
 ```
 
-Note: When using Refs, an Action type (as described in
+## Full examples
+
+Ref-based versions of Counter, CounterPair, and CounterList
+in the style of the Elm Architecture tutorial are
+[here](https://github.com/karldray/elm-ref/tree/master/examples).
+
+## Note on model-view separation
+
+In this pattern, an Action type (as described in
 [the Elm Architecture](https://github.com/evancz/elm-architecture-tutorial#the-elm-architecture))
 is not part of a typical module's public API.
-However, it's good practice to keep model-manipulating code separate from view logic.
-Your module should still use an abstraction like Actions
-so that you can change the behavior of your updates without touching view code.
+However, it's still good practice to keep model-manipulating code separate from view logic,
+and you can still use an Action type to help with this.
+Just partially-apply your update function when constructing event handlers:
+
+```elm
+onClick (transform model) (update MyAction)
+```
+
+In fact, using Actions is easier in a Ref-based module because
+you don't need to thread nested components' actions through your own Action/update code!
 
 
-# Fields
+# Field
 @docs field
 
-# Array and Dict elements
-See Array.Ref. Dict.Ref doesn't exist yet.
+# Array.Ref and Dict.Ref
+These modules help you:
+- Create Refs that point to elements inside collections
+- Map over collections, passing elements "by reference" to a function
 
 # Address builders for use in Html.Events attributes
 @docs transform, set

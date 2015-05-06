@@ -2,6 +2,10 @@ module Array.Ref (get, indexedMap, map) where
 {-| Tools for dealing with `Ref Array` values.
 These functions are analagous to the corresponding ones from the Array module.
 
+See
+[CounterList.elm](https://github.com/karldray/elm-ref/blob/master/examples/CounterList.elm)
+for example usage.
+
 @docs get, map, indexedMap
 -}
 
