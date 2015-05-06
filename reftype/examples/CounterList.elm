@@ -4,7 +4,7 @@ import Array exposing (Array)
 import Array.Extra
 import Array.Ref
 import Counter
-import Html exposing (Html, div, button, text)
+import Html exposing (Html, button, div, text)
 import Html.Events exposing (onClick)
 import Ref exposing (Ref, transform)
 
