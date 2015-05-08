@@ -14,6 +14,7 @@ type alias Model = Array Counter.Model
 init : List Counter.Model -> Model
 init = Array.fromList
 
+
 addBtn : Ref Model -> Html
 addBtn model = button [onClick (transform model) (Array.push (Counter.init 0))] [text "+"]
 
@@ -34,6 +35,9 @@ view2 model = div [] (
         ) model)
     )
 
+viewBoth : Ref Model -> Html
+viewBoth model = div [] [view1 model, view2 model]
+
 
 main : Signal Html
-main = Signal.map view2 (Ref.signal (init []))
+main = Signal.map viewBoth (Ref.signal (init []))

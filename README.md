@@ -5,25 +5,47 @@ Refs can simplify building modular UI components that know how to update themsel
 A typical module might look like this:
 
 ```elm
-type alias Model = {foo: String, widget: Widget.Model}
+type alias Model =
+    { foo: String
+    , widget: Widget.Model,
+    , bloops: Array Bloop.Model
+    }
 
+-- a model-updating function
 changeFoo : String -> Model -> Model
 changeFoo x model = {model | foo <- x}
 
+
+-- create Focus objects that represent fields of our Model type.
+widgetFocus = Ref.focus .widget (\x m -> {m | widget <- x})
+bloopsFocus = Ref.focus .bloops (\x m -> {m | bloops <- x})
+
+
 view : Ref Model -> Html
 view model =
-    div [] [
-        text model.value.foo, -- model.value is our Model
-        (button
-            [onClick (transform model) (changeFoo "Hello")] -- on click, perform an update
-            [text "Hi"]
-        ),
-        -- pass the contained widget's model "by reference" to its module's view function 
-        Widget.view (Ref.field "widget" model)
-    ]
+    let
+        -- create Refs to fields of our model record
+        widget = Ref.map widgetFocus model
+        bloops = Ref.map bloopsFocus model
+    in
+        div [] [
+            -- model.value is our Model
+            text model.value.foo,
+
+            -- on click, perform an update
+            (button [onClick (transform model) (changeFoo "Hello")] [text "Hi"]),
+
+            -- pass a nested component's model "by reference" to its module's view function 
+            Widget.view widget,
+
+            -- map over an array, passing elements "by reference" to a view function
+            span [] (Array.Ref.map Bloop.view bloops)
+        ]
+
 
 main : Signal Html
 main = Signal.map view (Ref.signal initialModel)
+
 ```
 
 ## Full examples
@@ -31,3 +53,19 @@ main = Signal.map view (Ref.signal initialModel)
 Ref-based versions of Counter, CounterPair, and CounterList
 in the style of the Elm Architecture tutorial are
 [here](https://github.com/karldray/elm-ref/tree/master/examples).
+
+## Note on model-view separation
+
+In this pattern, an Action type (as described in
+[the Elm Architecture](https://github.com/evancz/elm-architecture-tutorial#the-elm-architecture))
+is not part of a typical module's public API.
+However, it's still good practice to keep model-manipulating code separate from view logic,
+and you can still use an Action type to help with this.
+Just partially-apply your update function when constructing event handlers:
+
+```elm
+onClick (transform model) (update MyAction)
+```
+
+In fact, using Actions is easier in a Ref-based module because
+you don't need to thread nested components' actions through your own Action/update code!

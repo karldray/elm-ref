@@ -10,7 +10,6 @@
         "Ref",
         "Array.Ref"
     ],
-    "native-modules": true,
     "dependencies": {
         "circuithub/elm-array-extra": "1.0.2 <= v < 2.0.0",
         "elm-lang/core": "2.0.1 <= v < 3.0.0"
