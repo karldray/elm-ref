@@ -11,13 +11,13 @@ init : Counter.Model -> Counter.Model -> Model
 init x y = {left = x, right = y}
 
 
-leftFocus = Ref.focus .left (\x m -> {m | left <- x})
-rightFocus = Ref.focus .right (\x m -> {m | right <- x})
+leftField = Ref.focus .left (\x m -> {m | left <- x})
+rightField = Ref.focus .right (\x m -> {m | right <- x})
 
 view : Ref Model -> Html
 view model = div [] [
-        Counter.view (Ref.map leftFocus model),
-        Counter.view (Ref.map rightFocus model)
+        Counter.view (Ref.map leftField model),
+        Counter.view (Ref.map rightField model)
     ]
 
 

@@ -17,16 +17,16 @@ changeFoo x model = {model | foo <- x}
 
 
 -- create Focus objects that represent fields of our Model type.
-widgetFocus = Ref.focus .widget (\x m -> {m | widget <- x})
-bloopsFocus = Ref.focus .bloops (\x m -> {m | bloops <- x})
+widgetField = Ref.focus .widget (\x m -> {m | widget <- x})
+bloopsField = Ref.focus .bloops (\x m -> {m | bloops <- x})
 
 
 view : Ref Model -> Html
 view model =
     let
         -- create Refs to fields of our model record
-        widget = Ref.map widgetFocus model
-        bloops = Ref.map bloopsFocus model
+        widget = Ref.map widgetField model
+        bloops = Ref.map bloopsField model
     in
         div [] [
             -- model.value is our Model
@@ -66,6 +66,3 @@ Just partially-apply your update function when constructing event handlers:
 ```elm
 onClick (transform model) (update MyAction)
 ```
-
-In fact, using Actions is easier in a Ref-based module because
-you don't need to thread nested components' actions through your own Action/update code!
