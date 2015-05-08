@@ -33,7 +33,7 @@ view model =
             text model.value.foo,
 
             -- on click, perform an update
-            (button [onClick (transform model) (changeFoo "Hello")] [text "Hi"]),
+            button [onClick (transform model) (changeFoo "Hello")] [text "Hi"],
 
             -- pass a nested component's model "by reference" to its module's view function 
             Widget.view widget,

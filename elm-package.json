@@ -1,5 +1,5 @@
 {
-    "version": "1.0.2",
+    "version": "1.0.3",
     "summary": "An experimental library for representing mutable values",
     "repository": "https://github.com/karldray/elm-ref.git",
     "license": "BSD3",
@@ -11,7 +11,6 @@
         "Array.Ref"
     ],
     "dependencies": {
-        "circuithub/elm-array-extra": "1.0.2 <= v < 2.0.0",
         "elm-lang/core": "2.0.1 <= v < 3.0.0"
     },
     "elm-version": "0.15.0 <= v < 0.16.0"
