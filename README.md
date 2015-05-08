@@ -44,7 +44,7 @@ view model =
 
 
 main : Signal Html
-main = Signal.map view (Ref.signal initialModel)
+main = Signal.map view (Ref.new initialModel)
 
 ```
 

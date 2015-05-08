@@ -22,4 +22,4 @@ view model = div [] [
 
 
 main : Signal Html
-main = Signal.map view (Ref.signal (init 0 0))
+main = Signal.map view (Ref.new (init 0 0))

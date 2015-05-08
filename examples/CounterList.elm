@@ -40,4 +40,4 @@ viewBoth model = div [] [view1 model, view2 model]
 
 
 main : Signal Html
-main = Signal.map viewBoth (Ref.signal (init []))
+main = Signal.map viewBoth (Ref.new (init []))

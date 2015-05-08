@@ -1,9 +1,9 @@
-module Ref (Ref, Focus, focus, map, transform, set, signal, fromMailbox) where
+module Ref (Ref, Focus, focus, map, transform, set, new, fromMailbox) where
 {-| A `Ref` represents a "mutable" piece of data that might exist inside a larger data structure.
 It exposes the current value of that data and encapsulates the information needed to update it.
 
 # Creating top-level Refs
-@docs signal, fromMailbox
+@docs new, fromMailbox
 
 # Manipulating Refs
 These functions help you work with references to records.
@@ -59,5 +59,5 @@ fromMailbox : Mailbox t -> Signal (Ref t)
 fromMailbox m = Signal.map (\x -> {value = x, address = m.address}) m.signal
 
 {-| Create a new mutable object with the given initial value. -}
-signal : t -> Signal (Ref t)
-signal = fromMailbox << Signal.mailbox
+new : t -> Signal (Ref t)
+new = fromMailbox << Signal.mailbox

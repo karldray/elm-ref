@@ -24,4 +24,4 @@ viewWithRemove model remove =
 
 
 main : Signal Html
-main = Signal.map view (Ref.signal (init 0))
+main = Signal.map view (Ref.new (init 0))
