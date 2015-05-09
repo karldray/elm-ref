@@ -19,11 +19,19 @@ import Signal
 get : Int -> Ref (Array t) -> Maybe (Ref t)
 get index array = Maybe.map (\v -> item index v array) (Array.get index array.value)
 
+{-| Apply an update function to the element at a given index in an array.
+Does nothing if the index is out of bounds.
+-}
+updateAt : Int -> (a -> a) -> Array a -> Array a
+updateAt i f a = case Array.get i a of
+    Nothing -> a
+    Just val -> Array.set i (f val) a
+
 {-| Like `get`, but use the provided value and don't check that the index is in bounds. -}
 item : Int -> t -> Ref (Array t) -> Ref t
 item index value array =
     { value = value
-    , address = Signal.forwardTo (Ref.transform array) (Array.set index)
+    , address = Signal.forwardTo (transform array) (updateAt index)
     }
 
 {-| Like `map`, but also passes element indexes to the provided function. -}

@@ -1,9 +1,9 @@
-module Ref (Ref, Focus, focus, map, transform, set, new, fromMailbox) where
+module Ref (Ref, Focus, focus, map, transform, set, new) where
 {-| A `Ref` represents a "mutable" piece of data that might exist inside a larger data structure.
 It exposes the current value of that data and encapsulates the information needed to update it.
 
 # Creating top-level Refs
-@docs new, fromMailbox
+@docs new
 
 # Manipulating Refs
 These functions help you work with references to records.
@@ -17,16 +17,16 @@ For working with references to collections, see the Array.Ref and Dict.Ref modul
 import Signal exposing (Address, Mailbox, Message)
 
 
-type alias Ref t = {value: t, address: Address t}
+type alias Ref t = {value: t, address: Address (t -> t)}
 
 
 {-| Create an Address that replaces the referenced value with whatever you send it. -}
 set : Ref t -> Address t
-set r = r.address
+set r = Signal.forwardTo r.address always
 
 {-| Create an Address that updates the referenced value by applying functions to it. -}
 transform : Ref t -> Address (t -> t)
-transform r = Signal.forwardTo r.address (\f -> f r.value)
+transform r = r.address
 
 
 {-| A Focus describes how to get and set a value of one type inside a value of another type.
@@ -46,18 +46,20 @@ fooField = Ref.focus .foo (\x m -> {m | foo <- x})
 focus : (t -> u) -> (u -> t -> t) -> Focus t u
 focus get set = {get = get, set = set}
 
+{-| Convert an update function for small objects into an update function for big objects. -}
+mapUpdate : Focus t u -> (u -> u) -> t -> t
+mapUpdate f smallUpdate big = f.set (smallUpdate (f.get big)) big
+
 {-| Apply a Focus to a "big" Ref, creating a reference to the "small" value inside it. -}
 map : Focus t u -> Ref t -> Ref u
 map f r = {
     value = f.get r.value,
-    address = Signal.forwardTo (transform r) (f.set)
+    address = Signal.forwardTo (transform r) (mapUpdate f)
     }
-
-
-{-| Create a Ref that refers to the value in a Mailbox. -}
-fromMailbox : Mailbox t -> Signal (Ref t)
-fromMailbox m = Signal.map (\x -> {value = x, address = m.address}) m.signal
 
 {-| Create a new mutable object with the given initial value. -}
 new : t -> Signal (Ref t)
-new = fromMailbox << Signal.mailbox
+new initialValue =
+    let mailbox = Signal.mailbox identity
+        value = Signal.foldp identity initialValue mailbox.signal
+    in  Signal.map (\x -> {value = x, address = mailbox.address}) value
