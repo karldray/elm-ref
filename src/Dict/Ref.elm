@@ -1,4 +1,4 @@
-module Dict.Ref (get, map) where
+module Dict.Ref (get, values, toList, mapToList, map) where
 {-| Tools for dealing with `Ref Dict` values.
 These functions are analagous to the corresponding ones from the Dict module.
 
@@ -6,10 +6,11 @@ See
 [CounterDict.elm](https://github.com/karldray/elm-ref/blob/master/examples/CounterDict.elm)
 for example usage.
 
-@docs get, map
+@docs get, values, toList, mapToList, map
 -}
 
 import Dict exposing (Dict)
+import List
 import Maybe
 import Ref exposing (Ref, transform)
 import Signal
@@ -34,7 +35,21 @@ item key value dict =
     , address = Signal.forwardTo (transform dict) (updateAt key)
     }
 
-{-| Map over a dictionary, passing keys and values to the provided function.
+{-| Get a list of references to the values in a dictionary. -}
+values : Ref (Dict comparable a) -> List (Ref a)
+values = List.map snd << toList
+
+{-| Convert a dictionary to a list of (key, Ref value) pairs. -}
+toList : Ref (Dict comparable a) -> List (comparable, Ref a)
+toList = mapToList (,)
+
+{-| Map over a referenced dictionary,
+passing keys and values to the provided function,
+returning the results in a list.
 Values (but not keys) are passed "by reference". -}
+mapToList : (comparable -> Ref a -> b) -> Ref (Dict comparable a) -> List b
+mapToList f d = Dict.values (map f d)
+
+{-| Like `mapToList`, but produces a new dictionary with the same keys as the given one. -}
 map : (comparable -> Ref a -> b) -> Ref (Dict comparable a) -> Dict comparable b
 map f dict = Dict.map (\k v -> f k (item k v dict)) dict.value

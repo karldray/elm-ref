@@ -48,13 +48,13 @@ view model =
                         ]
             ]]
             ++
-            Dict.values (Dict.Ref.map (\k v ->
+            Dict.Ref.mapToList (\k v ->
                 let remove = Signal.forwardTo (transform counters) (always (Dict.remove k))
                 in  div [] [
                         Counter.viewWithRemove v remove,
                         text k
                     ]
-            ) counters)
+            ) counters
         )
 
 
