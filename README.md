@@ -6,14 +6,14 @@ A typical module might look like this:
 
 ```elm
 type alias Model =
-    { foo: String
+    { foo: String,
     , widget: Widget.Model,
     , bloops: Array Bloop.Model
     }
 
--- a model-updating function
-changeFoo : String -> Model -> Model
-changeFoo x model = {model | foo <- x}
+-- an model-updating function
+multiplyFoo : Int -> Model -> Model
+multiplyFoo n model = {model | foo <- String.repeat n model.foo}
 
 
 -- create Focus objects that represent fields of our Model type.
@@ -33,13 +33,16 @@ view model =
             text model.value.foo,
 
             -- on click, perform an update
-            button [onClick (transform model) (changeFoo "Hello")] [text "Hi"],
+            button [onClick (transform model) (multiplyFoo 2)] [text "double it"],
 
             -- pass a nested component's model "by reference" to its module's view function 
             Widget.view widget,
 
             -- map over an array, passing elements "by reference" to a view function
             span [] (Array.Ref.map Bloop.view bloops)
+
+            -- another update
+            button [onClick (transform bloops) (Array.push (Bloop.init 55))] [text "new bloop"],
         ]
 
 
