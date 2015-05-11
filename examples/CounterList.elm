@@ -31,7 +31,7 @@ view2 model = div [] (
         ++
         Array.toList (Array.Ref.indexedMap (\i counter ->
             let remove = Signal.forwardTo (transform model) (always (Array.Extra.removeAt i))
-            in  Counter.viewWithRemove counter remove
+            in  div [] [Counter.viewWithRemove counter remove]
         ) model)
     )
 

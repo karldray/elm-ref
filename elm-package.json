@@ -1,5 +1,5 @@
 {
-    "version": "3.0.0",
+    "version": "3.1.0",
     "summary": "An experimental library for representing mutable values",
     "repository": "https://github.com/karldray/elm-ref.git",
     "license": "BSD3",
@@ -8,7 +8,8 @@
     ],
     "exposed-modules": [
         "Ref",
-        "Array.Ref"
+        "Array.Ref",
+        "Dict.Ref"
     ],
     "dependencies": {
         "elm-lang/core": "2.0.1 <= v < 3.0.0"

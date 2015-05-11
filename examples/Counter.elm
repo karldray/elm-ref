@@ -1,6 +1,6 @@
 module Counter where
 
-import Html exposing (Html, button, div, text)
+import Html exposing (Html, button, span, text)
 import Html.Events exposing (onClick)
 import Ref exposing (Ref, transform)
 
@@ -17,7 +17,7 @@ view model =
 
 viewWithRemove : Ref Model -> Signal.Address () -> Html
 viewWithRemove model remove =
-    div [] [
+    span [] [
             view model,
             button [onClick remove ()] [text "x"]
         ]
