@@ -11,7 +11,7 @@ type alias Model =
     , bloops: Array Bloop.Model
     }
 
--- an model-updating function
+-- a model-updating function
 multiplyFoo : Int -> Model -> Model
 multiplyFoo n model = {model | foo <- String.repeat n model.foo}
 
