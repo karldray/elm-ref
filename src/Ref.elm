@@ -1,4 +1,4 @@
-module Ref (Ref, Focus, focus, map, transform, set, new) where
+module Ref (Ref, Focus, focus, map, fst, snd, destructure, transform, set, new) where
 {-| A `Ref` represents a "mutable" piece of data that might exist inside a larger data structure.
 It exposes the current value of that data and encapsulates the information needed to update it.
 
@@ -6,9 +6,16 @@ It exposes the current value of that data and encapsulates the information neede
 @docs new
 
 # Manipulating Refs
-These functions help you work with references to records.
-For working with references to collections, see the Array.Ref and Dict.Ref modules.
+
+## Records
 @docs Focus, focus, map
+
+## Tuples
+@docs fst, snd, destructure
+
+## Collections
+See the Array.Ref and Dict.Ref modules.
+
 
 # Address builders for use in Html.Events attributes
 @docs transform, set
@@ -56,6 +63,22 @@ map f r = {
     value = f.get r.value,
     address = Signal.forwardTo (transform r) (mapUpdate f)
     }
+
+
+{-| Split a referenced pair into two references. -}
+destructure : Ref (a, b) -> (Ref a, Ref b)
+destructure r = (fst r, snd r)
+
+{-| Refer to the first element of a pair. -}
+fst : Ref (a, b) -> Ref a
+fst = map (focus Basics.fst (\x (_, y) -> (x, y)))
+
+{-| Refer to the second element of a pair. -}
+snd : Ref (a, b) -> Ref b
+snd = map (focus Basics.snd (\y (x, _) -> (x, y)))
+
+-- inverse of destructure? what about building records? when would these be useful?
+
 
 {-| Create a new mutable object with the given initial value. -}
 new : t -> Signal (Ref t)
